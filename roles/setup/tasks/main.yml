@@ -19,3 +19,6 @@
 - name: Install promtail
   import_tasks: install_promtail.yml
   when: promtail|default(false)|bool == true
+
+- name: Install Zabbix
+  import_tasks: install_zabbix.yml
