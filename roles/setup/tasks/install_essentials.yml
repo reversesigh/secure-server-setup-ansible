@@ -11,5 +11,6 @@
       - git
       - ufw
       - bash-completion
+      - lz4
     state: latest
     update_cache: true

@@ -1,12 +1,10 @@
 ---
 - name: Create users
-  import_tasks: create_users.yml
+  include_tasks: create_users.yml
+  loop: "{{ user_details }}"
 
 - name: Configure Machine
   import_tasks: configure_machine.yml
-
-- name: Create Aliases
-  import_tasks: create_aliases.yml
 
 - name: Update machine
   import_tasks: update_machine.yml

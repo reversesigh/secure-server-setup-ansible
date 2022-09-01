@@ -61,3 +61,6 @@
 - name: Enable firewall
   ufw: 
     state: enabled
+
+- name: Unconditionally reboot the machine with all defaults
+  reboot: 
