@@ -1,24 +1,12 @@
 ---
-- name: Set Zabbix Agent variable
-  set_fact:
-    agent_file: /tmp/zabbix_agent.deb
-
-- name: Check if agent file exists
-  stat:
-    path: "{{ agent_file }}"
-  register: agent_file_check
-
-- meta: end_play
-  when: agent_file_check.stat.exists
-
 - name: Download Zabbix Agent 5.4
   get_url:
     url: "{{ zabbix_url }}"
-    dest: '{{ agent_file }}'
+    dest: '{{ zabbix_file }}'
 
 - name: Install Zabbix
   apt:
-    deb: '{{ agent_file }}'
+    deb: '{{ zabbix_file }}'
     update_cache: true
 
 - name: Install Zabbix Agent

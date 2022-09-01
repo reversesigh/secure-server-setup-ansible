@@ -1,7 +1,7 @@
 ---
 - name: change hostname
   hostname:
-    name: '{{hostname}}'
+    name: '{{ hostname }}'
 
 - name: Update Timezone to my time
   shell: 'timedatectl set-timezone America/Puerto_Rico'

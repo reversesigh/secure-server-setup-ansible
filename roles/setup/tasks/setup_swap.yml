@@ -1,12 +1,3 @@
-- name: Check if swap file exists
-  stat:
-    path: "{{ swap_file }}"
-  register: swap_file_check
-
-- name: End early if swap exists
-  meta: end_play
-  when: swap_file_check.stat.exists
-
 - name: Create swap file
   command: fallocate -l {{ swap_space }} {{ swap_file }}
 

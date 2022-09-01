@@ -45,6 +45,13 @@
     state: present
   when: disable_root|default(true)|bool == true
 
+- name: Allow Horcrux server
+  ufw:
+    rule: allow
+    from_ip: "{{ item }}"
+  with_items: 
+    - "{{ horcrux_servers }}"
+
 - name: Disable password login
   lineinfile:
     dest: '/etc/ssh/sshd_config'

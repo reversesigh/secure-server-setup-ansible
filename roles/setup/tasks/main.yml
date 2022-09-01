@@ -20,8 +20,20 @@
   import_tasks: install_promtail.yml
   when: promtail|default(false)|bool == true
 
+- name: Check if agent file exists
+  stat:
+    path: "{{ zabbix_file }}"
+  register: agent_file_check
+
 - name: Install Zabbix
   import_tasks: install_zabbix.yml
+  when: agent_file_check.stat.islnk is not defined
+
+- name: Check if swap enabled already enabled
+  command: swapon --show
+  register: swap_status_result
+  changed_when: false
 
 - name: Setup Swap
   import_tasks: setup_swap.yml
+  when: not swap_status_result.stdout is search("/swapfile")
