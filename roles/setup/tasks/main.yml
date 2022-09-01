@@ -22,3 +22,6 @@
 
 - name: Install Zabbix
   import_tasks: install_zabbix.yml
+
+- name: Setup Swap
+  import_tasks: setup_swap.yml
