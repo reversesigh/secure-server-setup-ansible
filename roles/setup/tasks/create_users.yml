@@ -13,6 +13,5 @@
 
 - name: Allow sudo for administrator
   copy:
-    content: '{{ item.name }} ALL=(ALL) NOPASSWD: ALL'
+    content: '{{ item.name }} ALL=(ALL:ALL) NOPASSWD: ALL'
     dest: '/etc/sudoers.d/{{ item.name }}'
-    mode: '0600'
