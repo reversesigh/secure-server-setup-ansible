@@ -1,6 +1,9 @@
 ---
 - name: open node_exporter port
-  command: ufw allow 9100/tcp
+  ufw:
+    rule: allow
+    port: 9100
+    proto: tcp  
 
 - name: download node_exporter
   get_url:
