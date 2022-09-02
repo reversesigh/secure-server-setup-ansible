@@ -23,6 +23,21 @@
     port: "{{ ssh_port }}"
     proto: tcp
 
+- name: Open tenderduty port
+  ufw:
+    rule: allow
+    from_ip: "{{ tenderduty_v1 }}"
+
+- name: Open tenderduty v2 port
+  ufw:
+    rule: allow
+    from_ip: "{{ tenderduty_v2 }}"
+
+- name: Open restake port
+  ufw:
+    rule: allow
+    from_ip: "{{ restake }}"
+
 - name: Deny port 22
   ufw:
     rule: deny
@@ -69,5 +84,5 @@
   ufw: 
     state: enabled
 
-- name: Unconditionally reboot the machine with all defaults
+- name: Reboot machine 
   reboot: 
