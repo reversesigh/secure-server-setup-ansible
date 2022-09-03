@@ -12,5 +12,6 @@
       - ufw
       - bash-completion
       - lz4
+      - lsof
     state: latest
     update_cache: true
