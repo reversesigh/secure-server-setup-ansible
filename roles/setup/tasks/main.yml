@@ -26,6 +26,15 @@
 
 - name: Check if agent file exists
   stat:
+    path: /etc/default/cpufrequtils
+  register: cpu_goveror_check
+
+- name: Set CPU governor
+  import_tasks: performance.yml
+  when: not cpu_goveror_check.stat.exists
+
+- name: Check if agent file exists
+  stat:
     path: "{{ zabbix_file }}"
   register: agent_file_check
 
