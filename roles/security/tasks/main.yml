@@ -60,6 +60,14 @@
     state: present
   when: disable_root|default(true)|bool == true
 
+- name: AllowUsers
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    regexp: '^AllowUsers'
+    line: 'AllowUsers schultzie rbatty deploy horcrux'
+    state: present
+    create: true
+
 - name: Allow Horcrux server
   ufw:
     rule: allow
@@ -84,5 +92,19 @@
   ufw: 
     state: enabled
 
-- name: Reboot machine 
-  reboot: 
+- name: add a list of hosts to /etc/hosts
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^{{ item['ip'] }}.*$"
+    line: "{{ item['ip'] }}\t\t{{ item['names'] | join(' ') }}"
+    state: present
+  with_items:
+  - ip: 127.0.0.1
+    names:
+    - localhost
+    - '{{ hostname }}'
+  - ip: ::1
+    names:
+    - localhost
+    - '{{ hostname }}'
