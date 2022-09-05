@@ -1,2 +1,3 @@
 inventory.ini
-users.yaml
+users.yml
+.DS_Store
