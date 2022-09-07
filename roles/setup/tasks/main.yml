@@ -20,6 +20,9 @@
   import_tasks: install_promtail.yml
   when: promtail|default(false)|bool == true
 
+- name: Create Aliases
+  import_tasks: create_aliases.yml
+
 - name: Install Cosmos Dependencies
   import_tasks: install_cosmos_dependencies.yml
   when: cosmovisor|default(false)|bool == true

@@ -15,3 +15,11 @@
   copy:
     content: '{{ item.name }} ALL=(ALL:ALL) NOPASSWD: ALL'
     dest: '/etc/sudoers.d/{{ item.name }}'
+
+- name: Create alias file
+  template:
+    src: bash_aliases.j2
+    dest: '/home/{{ item.name }}/.bash_aliases'
+    owner: '{{ item.name }}'
+    group: '{{ item.name }}'
+    mode: '0644'
