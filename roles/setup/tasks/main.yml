@@ -20,10 +20,6 @@
   import_tasks: install_promtail.yml
   when: promtail|default(false)|bool == true
 
-- name: Install Cosmos Dependencies
-  import_tasks: install_cosmos_dependencies.yml
-  when: cosmovisor|default(false)|bool == true
-
 - name: Check if agent file exists
   stat:
     path: /etc/default/cpufrequtils

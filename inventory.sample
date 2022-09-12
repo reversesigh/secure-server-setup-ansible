@@ -19,3 +19,13 @@ promtail=false
 promtail_version='2.4.1'
 promtail_monitor='http://192.168.0.0:3100'
 promtail_name=something
+
+# Go
+go_version='1.18.5'
+
+# Cosmovisor
+ansible_user=deploy
+cosmovisor=true
+cosmovisor_version='v1.3.0'
+user_dir="/home/{{ ansible_user }}"
+path="/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin:{{ user_dir }}/go/bin"
