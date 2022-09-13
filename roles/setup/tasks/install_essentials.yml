@@ -52,9 +52,3 @@
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
     mode: '0600'
-
-- name: Install cosmovisor
-  command: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
-  environment:
-    PATH: '{{ path }}'
-    GOPATH: '{{ user_dir }}/go'
