@@ -1,0 +1,39 @@
+---
+- name: Add Caddy GPG
+  apt_key:
+   url: "{{ caddy_apt_gpg_key }}"
+   state: present
+  become: true
+
+- name: Add Caddy Repo
+  apt_repository:
+    repo: "{{ caddy_apt_repository }}"
+    state: present
+  become: true
+
+- name: Install Caddy
+  apt:
+    name: '{{ caddy_package }}'
+    state: present
+    update_cache: true
+  become: true
+
+- name: Open Caddy port
+  ufw:
+    rule: allow
+    port: 80,443
+    proto: tcp
+
+- name: Add Caddy import
+  lineinfile:
+    dest: '/etc/caddy/Caddyfile'
+    regex: 'import /etc/caddy/*.caddy'
+    line: 'import /etc/caddy/*.caddy'
+    state: present
+    create: true
+
+- name: Start Caddy service
+  systemd:
+    name: caddy
+    daemon_reload: yes
+    enabled: yes

@@ -46,3 +46,7 @@
 - name: Setup Swap
   import_tasks: setup_swap.yml
   when: not swap_status_result.stdout is search("/swapfile")
+
+- name: Install Caddy
+  import_tasks: install_caddy.yml
+  when: caddy|default(false)|bool == true
