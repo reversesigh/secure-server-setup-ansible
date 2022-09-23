@@ -20,14 +20,8 @@
   import_tasks: install_promtail.yml
   when: promtail|default(false)|bool == true
 
-- name: Check if agent file exists
-  stat:
-    path: /etc/default/cpufrequtils
-  register: cpu_goveror_check
-
 - name: Set CPU governor
   import_tasks: performance.yml
-  when: not cpu_goveror_check.stat.exists
 
 - name: Install Zabbix
   import_tasks: install_zabbix.yml

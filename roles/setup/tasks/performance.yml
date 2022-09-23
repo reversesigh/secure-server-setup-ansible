@@ -1,22 +1,30 @@
 ---
-- name: Install cpufrequtils
-  apt:
-    name: cpufrequtils
-    state: latest
-    update_cache: true
+- name: Check if cpufrequtils agent file exists
+  stat:
+    path: /etc/default/cpufrequtils
+  register: cpu_goveror_check
 
-- name: Set cpufrequtils params
-  shell:
-    cmd: |
-      cat > /etc/default/cpufrequtils << EOF
-      ENABLE="true"
-      GOVERNOR="performance"
-      EOF
+- name: Install and setup cpufrequtils
+  block:
+    - name: Install cpufrequtils
+      apt:
+        name: cpufrequtils
+        state: latest
+        update_cache: true
 
-- name: Start cpufrequtils
-  systemd:
-    name: cpufrequtils
-    state: started
-    daemon_reload: true
-    enabled: true
-  changed_when: false
+    - name: Set cpufrequtils params
+      shell:
+        cmd: |
+          cat > /etc/default/cpufrequtils << EOF
+          ENABLE="true"
+          GOVERNOR="performance"
+          EOF
+
+    - name: Start cpufrequtils
+      systemd:
+        name: cpufrequtils
+        state: started
+        daemon_reload: true
+        enabled: true
+      changed_when: false
+  when: not cpu_goveror_check.stat.exists
