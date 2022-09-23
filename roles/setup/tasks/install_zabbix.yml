@@ -1,39 +1,47 @@
 ---
-- name: Download Zabbix Agent 5.4
-  get_url:
-    url: "{{ zabbix_url }}"
-    dest: '{{ zabbix_file }}'
+- name: Check if agent file exists
+  stat:
+    path: "{{ zabbix_file }}"
+  register: agent_file_check
 
-- name: Install Zabbix
-  apt:
-    deb: '{{ zabbix_file }}'
-    update_cache: true
+- name: Install and setup Zabbix
+  block:
+    - name: Download Zabbix Agent 5.4
+      get_url:
+        url: "{{ zabbix_url }}"
+        dest: '{{ zabbix_file }}'
 
-- name: Install Zabbix Agent
-  apt:
-    name: zabbix-agent2
-    state: latest
-    update_cache: true
+    - name: Install Zabbix
+      apt:
+        deb: '{{ zabbix_file }}'
+        update_cache: true
 
-- name: Point to remote server
-  command: sed -i 's/Server=127.0.0.1/Server='"{{ zabbix_server }}"'/g' /etc/zabbix/zabbix_agent2.conf  
+    - name: Install Zabbix Agent
+      apt:
+        name: zabbix-agent2
+        state: latest
+        update_cache: true
 
-- name: Download Zabbix Agent 5.4
-  get_url:
-    url: "https://raw.githubusercontent.com/gh0stdotexe/cosmozab/main/zabbix_agent2.d/zab.userparameters.cosmos.conf"
-    dest: '/etc/zabbix/zabbix_agent2.d/zab.userparameters.cosmos.conf '
+    - name: Point to remote server
+      command: sed -i 's/Server=127.0.0.1/Server='"{{ zabbix_server }}"'/g' /etc/zabbix/zabbix_agent2.conf  
 
-- name: Open Zabbix port
-  ufw:
-    rule: allow
-    port: 10050
-    proto: tcp
-    from_ip: "{{ zabbix_server }}"
+    - name: Download Zabbix Agent 5.4
+      get_url:
+        url: "https://raw.githubusercontent.com/gh0stdotexe/cosmozab/main/zabbix_agent2.d/zab.userparameters.cosmos.conf"
+        dest: '/etc/zabbix/zabbix_agent2.d/zab.userparameters.cosmos.conf '
 
-- name: Start zabbix-agent2 service
-  systemd:
-    name: zabbix-agent2
-    state: restarted
-    daemon_reload: yes
-    enabled: yes
-  changed_when: false
+    - name: Open Zabbix port
+      ufw:
+        rule: allow
+        port: 10050
+        proto: tcp
+        from_ip: "{{ zabbix_server }}"
+
+    - name: Start zabbix-agent2 service
+      systemd:
+        name: zabbix-agent2
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+      changed_when: false
+  when: agent_file_check.stat.islnk is not defined

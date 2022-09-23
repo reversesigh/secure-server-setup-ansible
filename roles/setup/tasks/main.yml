@@ -29,14 +29,8 @@
   import_tasks: performance.yml
   when: not cpu_goveror_check.stat.exists
 
-- name: Check if agent file exists
-  stat:
-    path: "{{ zabbix_file }}"
-  register: agent_file_check
-
 - name: Install Zabbix
   import_tasks: install_zabbix.yml
-  when: agent_file_check.stat.islnk is not defined
 
 - name: Check if swap enabled already enabled
   command: swapon --show
