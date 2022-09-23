@@ -32,14 +32,8 @@
 - name: Install Zabbix
   import_tasks: install_zabbix.yml
 
-- name: Check if swap enabled already enabled
-  command: swapon --show
-  register: swap_status_result
-  changed_when: false
-
 - name: Setup Swap
   import_tasks: setup_swap.yml
-  when: not swap_status_result.stdout is search("/swapfile")
 
 - name: Install Caddy
   import_tasks: install_caddy.yml

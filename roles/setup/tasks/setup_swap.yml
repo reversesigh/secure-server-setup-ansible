@@ -1,19 +1,28 @@
-- name: Create swap file
-  command: fallocate -l {{ swap_space }} {{ swap_file }}
+---
+- name: Check if swap already enabled
+  command: swapon --show
+  register: swap_status_result
+  changed_when: false
+  
+- name: Setup and enable swap
+  block: 
+    - name: Create swap file
+      command: fallocate -l {{ swap_space }} {{ swap_file }}
 
-- name: Format swap file
-  command: mkswap {{ swap_file }}
+    - name: Format swap file
+      command: mkswap {{ swap_file }}
 
-- name: Set permissions on swap file
-  file:
-    path: "{{ swap_file }}"
-    mode: 0600
+    - name: Set permissions on swap file
+      file:
+        path: "{{ swap_file }}"
+        mode: 0600
 
-- name: Add to fstab
-  lineinfile:
-    dest: /etc/fstab
-    regexp: "{{ swap_file }}"
-    line: "{{ swap_file }} none swap sw 0 0"
+    - name: Add to fstab
+      lineinfile:
+        dest: /etc/fstab
+        regexp: "{{ swap_file }}"
+        line: "{{ swap_file }} none swap sw 0 0"
 
-- name: Turn on swap
-  command: swapon -a
+    - name: Turn on swap
+      command: swapon -a
+  when: not swap_status_result.stdout is search("/swapfile")
