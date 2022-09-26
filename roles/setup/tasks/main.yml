@@ -32,3 +32,6 @@
 - name: Install Caddy
   import_tasks: install_caddy.yml
   when: caddy|default(false)|bool == true
+
+- name: Install cosmprund
+  import_tasks: install_cosmprund.yml

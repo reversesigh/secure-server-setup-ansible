@@ -1,0 +1,28 @@
+---
+- name: Check if cosmprund is already installed
+  stat:
+    path: '{{ user_dir }}/go/bin/cosmprund'
+  register: cosmprund
+
+- name: Install cosmprund
+  block:
+    - name: Clone cosmprund repo
+      git:
+        repo: '{{ cosmprund_repo }}'
+        dest: '{{ user_dir }}/cosmprund'
+
+    - name: Install cosmprund
+      command: '{{ item }}'
+      args:
+        chdir: '{{ user_dir }}/cosmprund'
+      with_items:
+        - 'make install'
+      environment:
+        PATH: '{{ path }}'
+        GOPATH: '{{ user_dir }}/go'
+    
+    - name: rename cosmos-pruner to cosmprund
+      command: 'mv cosmos-pruner cosmprund'
+      args:
+        chdir: '{{ user_dir }}/go/bin'
+  when: not cosmprund.stat.exists
