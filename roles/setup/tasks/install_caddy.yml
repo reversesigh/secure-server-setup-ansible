@@ -18,6 +18,16 @@
     update_cache: true
   become: true
 
+- name: Use XCaddy to build Caddy with rate limit plugin
+  cmd: "{{ caddy_rate_limit }}"
+  become: true
+
+- name: Move Xcaddy to /usr/bin/
+  copy:
+    src: "caddy"
+    dest: /usr/bin/caddy
+    remote_src: yes
+
 - name: Open Caddy port
   ufw:
     rule: allow
