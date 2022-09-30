@@ -18,10 +18,20 @@
     update_cache: true
   become: true
 
-- name: Use XCaddy to build Caddy with rate limit plugin
-  cmd: "{{ caddy_rate_limit }}"
-  become: true
+- name: Install XCaddy
+  command: 'go install {{ xcaddy_repo }}'
+  environment:
+    PATH: '{{ path }}'
+    GOPATH: '{{ user_dir }}/go'
 
+- name: Use XCaddy to build Caddy with custom plugins
+  become: true
+  command: "xcaddy build --with {{ item }}"
+  with_items: '{{ xcaddy_custom_build }}'
+  environment:
+    PATH: '{{ path }}'
+    GOPATH: '{{ user_dir }}/go'
+  
 - name: Move Xcaddy to /usr/bin/
   copy:
     src: "caddy"
