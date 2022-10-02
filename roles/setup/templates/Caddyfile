@@ -1,0 +1,14 @@
+{
+	order rate_limit before basicauth
+}
+
+handle_errors {
+	respond "{err.status_code} {err.status_text}"
+}
+
+:80 {
+	root * /usr/share/caddy
+	file_server
+}
+
+import /etc/caddy/*.caddy
