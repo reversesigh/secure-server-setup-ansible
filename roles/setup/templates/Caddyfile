@@ -6,6 +6,21 @@ handle_errors {
 	respond "{err.status_code} {err.status_text}"
 }
 
+log {
+	output file /var/log/caddy/caddy.log {
+		roll_size 12mb
+		roll_keep 10
+		roll_keep_for 2160h
+	}
+	format json {
+		message_key msg
+		level_key level
+		time_key ts
+		name_key name
+		time_format wall
+	}
+}
+
 :80 {
 	root * /usr/share/caddy
 	file_server
