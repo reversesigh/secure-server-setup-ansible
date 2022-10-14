@@ -1,5 +1,46 @@
 {
 	order rate_limit before basicauth
+	log http.log.access {
+			include http.log.access
+			output file /var/log/caddy/access.log
+			format formatted "\e[35m[{ts}]\e[0m \e[96m\e[1m{request>remote_ip}\e[0m \e[31m{request>headers>X-Forwarded-For}\e[0m \e[33m{request>method}\e[0m \e[92m{request>host}\e[32m{request>uri}\e[0m \e[97m{status}\e[0m   \e[90m{request>headers>User-Agent}\e[0m \e[34m{request>headers>Referer}\e[0m" {
+					time_format "02/Jan/2006:15:04:05-0700"
+			}
+	}
+	log {
+			exclude http.log.access
+			output file /var/log/caddy/caddy.log
+			format json
+	}
+}
+
+(rpc-header) {
+	header {
+		Access-Control-Allow-Methods "POST, GET, OPTIONS"
+		Access-Control-Allow-Headers "*"
+		Access-Control-Allow-Origin "*"
+		Access-Control-Max-Age 86400
+		Cache-Control no-cache
+		Pragma no-cache
+		-Server
+	}
+}
+
+(api-header) {
+	header {
+		Access-Control-Allow-Origin "*"
+	}
+}
+
+(rate-limiter) {
+	@ipfilter {
+        not header X-FORWARDED-FOR 2a01:4f9:1a:b26d::2
+        not header X-FORWARDED-FOR 2605:ba00:7118:542:a11b:7160:47d2:cb0d
+	}
+	handle @ipfilter {
+		rate_limit {header.X-FORWARDED-FOR} 500r/m
+		rate_limit {path} 20r/s
+	}
 }
 
 handle_errors {
