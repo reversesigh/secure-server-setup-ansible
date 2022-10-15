@@ -1,5 +1,6 @@
 {
 	order rate_limit before basicauth
+	# to see logs - tail -100f /var/log/caddy/access.log | while read -r line; do echo -e "$line"; done
 	log http.log.access {
 			include http.log.access
 			output file /var/log/caddy/access.log
@@ -33,17 +34,26 @@
 }
 
 (rate-limiter) {
+# checks for list of allowed IPs
 	@ipfilter {
-    	not header X-FORWARDED-FOR 2a01:4f9:1a:b26d::2
-        not header X-FORWARDED-FOR 2605:ba00:7118:542:a11b:7160:47d2:cb0d
+{% for allowed in white_list %}
+	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
+		{% for allowed_ip in allowed %}
+	not header X-FORWARDED-FOR {{ allowed_ip }}
+		{% endfor %}
+	{% else  %}
+	not header X-FORWARDED-FOR {{ allowed }}
+	{% endif  %}
+{% endfor %}
 	}
 	handle @ipfilter {
-		rate_limit {header.X-FORWARDED-FOR} 500r/m
+		rate_limit {header.X-FORWARDED-FOR} 250r/m
 		rate_limit {path} 20r/s
 	}
 }
 
 (blocked) {
+# checks for blocks IPs and re-directs them to 403
 	@blocked {
 {% for blocked in blocked_list %}
 		header X-FORWARDED-FOR {{ blocked }}
