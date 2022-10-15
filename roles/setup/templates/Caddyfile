@@ -34,13 +34,22 @@
 
 (rate-limiter) {
 	@ipfilter {
-        not header X-FORWARDED-FOR 2a01:4f9:1a:b26d::2
+    	not header X-FORWARDED-FOR 2a01:4f9:1a:b26d::2
         not header X-FORWARDED-FOR 2605:ba00:7118:542:a11b:7160:47d2:cb0d
 	}
 	handle @ipfilter {
 		rate_limit {header.X-FORWARDED-FOR} 500r/m
 		rate_limit {path} 20r/s
 	}
+}
+
+(blocked) {
+	@blocked {
+{% for blocked in blocked_list %}
+		header X-FORWARDED-FOR {{ blocked }}
+{% endfor %}
+	}
+	respond @blocked "<h1>Access Denied</h1>" 403
 }
 
 handle_errors {
