@@ -48,7 +48,8 @@
 	}
 	handle @ipfilter {
 		rate_limit {header.X-FORWARDED-FOR} 250r/m
-		rate_limit {path} 20r/s
+		rate_limit {header.X-FORWARDED-FOR} 10r/s
+		rate_limit {path.*} 25r/s
 	}
 }
 
