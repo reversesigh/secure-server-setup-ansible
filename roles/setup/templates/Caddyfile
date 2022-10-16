@@ -56,6 +56,7 @@
 (blocked) {
 # checks for blocks IPs and re-directs them to 403
 	@blocked {
+		header User-Agent SubQuery-Node
 {% for blocked in blocked_list %}
 		header X-FORWARDED-FOR {{ blocked }}
 {% endfor %}
