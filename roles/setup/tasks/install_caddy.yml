@@ -59,5 +59,6 @@
 - name: Start Caddy service
   systemd:
     name: caddy
+    state: restarted
     daemon_reload: yes
     enabled: yes
