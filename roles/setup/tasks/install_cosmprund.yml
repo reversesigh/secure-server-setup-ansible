@@ -5,6 +5,7 @@
   register: cosmprund
 
 - name: Install cosmprund
+  become: false
   block:
     - name: Clone cosmprund repo
       git:
