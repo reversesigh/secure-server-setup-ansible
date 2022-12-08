@@ -1,6 +1,7 @@
 {
 	order rate_limit before basicauth
-	# to see logs - tail -100f /var/log/caddy/access.log | while read -r line; do echo -e "$line"; done
+	# to see logs - 
+	# tail -100f /var/log/caddy/access.log | while read -r line; do echo -e "$line"; done
 	log http.log.access {
 			include http.log.access
 			output file /var/log/caddy/access.log
@@ -34,7 +35,7 @@
 }
 
 (rate-limiter) {
-# checks for list of allowed IPs
+	# checks for list of allowed IPs
 	@ipfilter {
 {% for allowed in white_list %}
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
@@ -46,15 +47,21 @@
 	{% endif  %}
 {% endfor %}
 	}
+
 	handle @ipfilter {
-		rate_limit {header.X-FORWARDED-FOR} 250r/m
-		rate_limit {header.X-FORWARDED-FOR} 10r/s
-		rate_limit {path.*} 25r/s
+		handle_path /cosmos/staking/v1beta1/validators/*/delegations/* {
+			respond 404
+		}
+
+		rate_limit {header.X-FORWARDED-FOR} 50r/m
+		rate_limit {path.*} 200r/m
+		rate_limit {header.X-FORWARDED-FOR} 5r/s
+		rate_limit {path.*} 15r/s
 	}
 }
 
 (blocked) {
-# checks for blocks IPs and re-directs them to 403
+# checks for blocked IPs and re-directs them to 403
 	@blocked {
 		header User-Agent SubQuery-Node
 {% for blocked in blocked_list %}
