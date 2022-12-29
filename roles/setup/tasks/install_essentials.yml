@@ -19,6 +19,7 @@
       - git
       - jq
       - chrony
+      - html2text
     state: latest
     update_cache: true
 
