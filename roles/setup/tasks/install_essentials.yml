@@ -8,6 +8,7 @@
       - tree
       - htop
       - zip
+      - unzip
       - git
       - ufw
       - bash-completion
