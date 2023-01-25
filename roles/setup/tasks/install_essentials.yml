@@ -1,5 +1,6 @@
 ---
 - name: Install essentials
+  become: true
   apt:
     name:
       - net-tools
