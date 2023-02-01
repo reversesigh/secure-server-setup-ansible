@@ -1,3 +1,4 @@
+# xcaddy: https://github.com/caddyserver/xcaddy#install
 ---
 - name: Add Caddy GPG
   apt_key:
