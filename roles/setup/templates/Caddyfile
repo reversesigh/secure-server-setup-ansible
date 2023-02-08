@@ -36,6 +36,7 @@
 
 (rate-limiter) {
 	# checks for list of allowed IPs
+	# documentation: https://caddyserver.com/docs/modules/http.handlers.rate_limit
 	@ipfilter {
 {% for allowed in white_list %}
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
@@ -55,10 +56,13 @@
 		handle_path /status* {
 			respond 404
 		}
+		rate_limit {remote.ip} 50r/m
 		rate_limit {header.X-FORWARDED-FOR} 50r/m
-		rate_limit {path.*} 200r/m
+		rate_limit {path.*} 150r/m
+
+		rate_limit {remote.ip} 5r/s
 		rate_limit {header.X-FORWARDED-FOR} 5r/s
-		rate_limit {path.*} 15r/s
+		rate_limit {path.*} 10r/s
 	}
 }
 
