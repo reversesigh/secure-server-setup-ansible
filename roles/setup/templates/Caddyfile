@@ -36,7 +36,8 @@
 
 (rate-limiter) {
 	# checks for list of allowed IPs
-	# documentation: https://caddyserver.com/docs/modules/http.handlers.rate_limit
+	# documentation for rate_limit: https://caddyserver.com/docs/modules/http.handlers.rate_limit
+	# documentation for xcaddy install: https://github.com/caddyserver/xcaddy#install
 	@ipfilter {
 {% for allowed in white_list %}
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
@@ -50,7 +51,7 @@
 	}
 
 	handle @ipfilter {
-		handle_path /cosmos/staking/v1beta1/validators/*/delegations/* {
+		handle_path /cosmos/staking/v1beta1/validators/*/delegations* {
 			respond 404
 		}
 		handle_path /status* {
