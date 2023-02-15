@@ -1,4 +1,8 @@
 ---
+- name: Register OS version
+  command: 'lsb_release -rs'
+  register: os_version
+
 - name: Check if agent file exists
   stat:
     path: "{{ zabbix_file }}"
