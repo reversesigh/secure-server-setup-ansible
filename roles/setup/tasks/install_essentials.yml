@@ -40,6 +40,12 @@
     group: root
     mode: '0755'
 
+- name: Go get cosmovisor
+  command: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
+  environment:
+    PATH: '{{ path }}'
+    GOPATH: '{{ user_dir }}/go'
+
 - name: Change go folder permission
   file:
     path: '{{ user_dir }}/go'
