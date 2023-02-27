@@ -58,13 +58,6 @@
     mode: '0644'
   tags: caddyfile
 
-- name: Start Caddy service
-  systemd:
-    name: caddy
-    state: restarted
-    daemon_reload: yes
-    enabled: yes
-
 - name: Make sure RuntimeMaxSec in 'caddy.service' exists
   lineinfile:
     path: '{{ service_path }}'
@@ -88,3 +81,10 @@
 
 - name: increase buffersize
   command: '{{ buffer_increase }}'
+
+- name: Start Caddy service
+  systemd:
+    name: caddy
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
