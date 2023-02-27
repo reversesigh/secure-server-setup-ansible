@@ -2,9 +2,11 @@
 - name: Check if cpufrequtils agent file exists
   stat:
     path: /etc/default/cpufrequtils
-  register: cpu_goveror_check
+  register: cpu_governor_check
 
 - name: Install and setup cpufrequtils
+  when: not cpu_governor_check.stat.exists
+  become: true
   block:
     - name: Install cpufrequtils
       apt:
@@ -27,4 +29,3 @@
         daemon_reload: true
         enabled: true
       changed_when: false
-  when: not cpu_goveror_check.stat.exists
