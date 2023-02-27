@@ -56,9 +56,9 @@
 		handle_path /cosmos/staking/v1beta1/validators/*/delegations* {
 			respond 404
 		}
-		handle_path /status* {
-			respond 404
-		}
+#		handle_path /status* {
+#			respond 404
+#		}
 		rate_limit {remote.ip} 100r/m
 		rate_limit {header.X-FORWARDED-FOR} 100r/m
 		rate_limit {path.*} 150r/m
