@@ -43,9 +43,11 @@
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
 		{% for allowed_ip in allowed %}
 	not header X-FORWARDED-FOR {{ allowed_ip }}
+	remote_ip {{ allowed_ip }}
 		{% endfor %}
 	{% else  %}
 	not header X-FORWARDED-FOR {{ allowed }}
+	remote_ip {{ allowed }}
 	{% endif  %}
 {% endfor %}
 	}
@@ -57,8 +59,8 @@
 		handle_path /status* {
 			respond 404
 		}
-		rate_limit {remote.ip} 50r/m
-		rate_limit {header.X-FORWARDED-FOR} 50r/m
+		rate_limit {remote.ip} 100r/m
+		rate_limit {header.X-FORWARDED-FOR} 100r/m
 		rate_limit {path.*} 150r/m
 
 		rate_limit {remote.ip} 5r/s
@@ -73,6 +75,7 @@
 		header User-Agent SubQuery-Node
 {% for blocked in blocked_list %}
 		header X-FORWARDED-FOR {{ blocked }}
+		remote_ip {{ blocked }}
 {% endfor %}
 	}
 	respond @blocked "<h1>Access Denied</h1>" 403
