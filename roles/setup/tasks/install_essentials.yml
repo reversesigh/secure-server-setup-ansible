@@ -24,6 +24,7 @@
       - html2text
       - aria2
     state: latest
+    upgrade: true
     update_cache: true
 
 - name: Download go
