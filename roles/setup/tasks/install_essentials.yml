@@ -22,6 +22,7 @@
       - jq
       - chrony
       - html2text
+      - aria2
     state: latest
     update_cache: true
 
