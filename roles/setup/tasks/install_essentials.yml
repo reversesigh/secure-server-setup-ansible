@@ -47,6 +47,7 @@
     GOPATH: '{{ user_dir }}/go'
 
 - name: Change go folder permission
+  become: true
   file:
     path: '{{ user_dir }}/go'
     owner: '{{ ansible_user }}'
