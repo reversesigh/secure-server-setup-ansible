@@ -43,11 +43,9 @@
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
 		{% for allowed_ip in allowed %}
         not header X-FORWARDED-FOR {{ allowed_ip }}
-        not remote_ip {{ allowed_ip }}
 		{% endfor %}
 	{% else  %}
         not header X-FORWARDED-FOR {{ allowed }}
-        not remote_ip {{ allowed }}
 	{% endif  %}
 {% endfor %}
 	}
@@ -73,10 +71,7 @@
 # checks for blocked IPs and re-directs them to 403
 	@blocked {
 		header User-Agent SubQuery-Node
-{% for blocked in blocked_list %}
-		header X-FORWARDED-FOR {{ blocked }}
-		remote_ip {{ blocked }}
-{% endfor %}
+		remote_ip forwarded {{ blocked_list }}
 	}
 	respond @blocked "<h1>Access Denied</h1>" 403
 }
