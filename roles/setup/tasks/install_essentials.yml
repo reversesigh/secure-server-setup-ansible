@@ -1,4 +1,11 @@
 ---
+- name: Upgrade
+  become: true
+  apt:
+    state: latest
+    upgrade: true
+    update_cache: true
+
 - name: Install essentials
   become: true
   apt:
@@ -24,7 +31,6 @@
       - html2text
       - aria2
     state: latest
-    upgrade: true
     update_cache: true
 
 - name: Download go

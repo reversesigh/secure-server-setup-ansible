@@ -25,6 +25,7 @@
 
 - name: Setup Swap
   import_tasks: setup_swap.yml
+  when: swap|default(false)|bool == true
 
 - name: Install Caddy
   import_tasks: install_caddy.yml
