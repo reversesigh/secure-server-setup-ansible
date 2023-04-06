@@ -1,4 +1,6 @@
 alias log="sudo journalctl -o cat -fu"
 alias restart="sudo systemctl restart"
 alias stop="sudo systemctl stop"
+alias reload="sudo systemctl daemon-reload"
+
 alias caddy-log="tail -100f /var/log/caddy/access.log | while read -r line; do echo -e "$line"; done"
