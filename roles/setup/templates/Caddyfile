@@ -43,9 +43,11 @@
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
 		{% for allowed_ip in allowed %}
         not header X-FORWARDED-FOR {{ allowed_ip }}
+        not remote_ip {{ allowed_ip }}
 		{% endfor %}
 	{% else  %}
         not header X-FORWARDED-FOR {{ allowed }}
+        not remote_ip {{ allowed }}
 	{% endif  %}
 {% endfor %}
 	}
