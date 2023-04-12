@@ -3,6 +3,6 @@
   hostname:
     name: '{{ hostname }}'
 
-- name: update Timezone to my time
-  shell: 'timedatectl set-timezone America/Los_Angeles'
+- name: update Timezone to UTC
+  shell: 'timedatectl set-timezone UTC'
   changed_when: false
