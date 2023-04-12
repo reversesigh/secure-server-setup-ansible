@@ -5,7 +5,7 @@
 	log http.log.access {
 			include http.log.access
 			output file /var/log/caddy/access.log
-			format formatted "\e[35m[{ts}]\e[0m \e[96m\e[1m{request>remote_ip}\e[0m \e[31m{request>headers>X-Forwarded-For}\e[0m \e[33m{request>method}\e[0m \e[92m{request>host}\e[32m{request>uri}\e[0m \e[97m{status}\e[0m   \e[90m{request>headers>User-Agent}\e[0m \e[34m{request>headers>Referer}\e[0m" {
+			format formatted "\e[97m{status}\e[0m | \e[35m[{ts}]\e[0m \e[96m\e[1m{request>remote_ip}\e[0m \e[31m{request>headers>X-Forwarded-For}\e[0m \e[33m{request>method}\e[0m \e[92m{request>host}\e[32m{request>uri}\e[0m \e[90m{request>headers>User-Agent}\e[0m \e[34m{request>headers>Origin}\e[0m" {
 					time_format "02/Jan/2006:15:04:05-0700"
 			}
 	}
@@ -39,6 +39,10 @@
 	# documentation for rate_limit: https://caddyserver.com/docs/modules/http.handlers.rate_limit
 	# documentation for xcaddy install: https://github.com/caddyserver/xcaddy#install
 	@ipfilter {
+		not header Origin [*yieldmos*]
+		not header Origin [*shadeprotocol*]
+		not header Origin [*kujira*]
+
 {% for allowed in white_list %}
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
 		{% for allowed_ip in allowed %}
