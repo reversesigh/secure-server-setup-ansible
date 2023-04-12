@@ -9,6 +9,9 @@
 - name: Install essentials
   import_tasks: install_essentials.yml
 
+- name: Install docker
+  import_tasks: install_docker.yml
+
 - name: Install node exporter
   import_tasks: install_node_exporter.yml
   when: node_exporter|default(false)|bool == true
