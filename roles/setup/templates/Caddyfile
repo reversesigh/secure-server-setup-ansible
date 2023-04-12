@@ -5,8 +5,8 @@
 	log http.log.access {
 			include http.log.access
 			output file /var/log/caddy/access.log
-			format formatted "\e[97m{status}\e[0m | \e[35m[{ts}]\e[0m \e[96m\e[1m{request>remote_ip}\e[0m \e[31m{request>headers>X-Forwarded-For}\e[0m \e[33m{request>method}\e[0m \e[92m{request>host}\e[32m{request>uri}\e[0m \e[90m{request>headers>User-Agent}\e[0m \e[34m{request>headers>Origin}\e[0m" {
-					time_format "02/Jan/2006:15:04:05-0700"
+			format formatted "\e[97m{status}\e[0m | \e[35m[{ts}]\e[0m \e[96m\e[1m{request>remote_ip}\e[0m \e[31m{request>headers>X-Forwarded-For}\e[0m \e[33m{request>method}\e[0m \e[92m{request>host}\e[32m{request>uri}\e[0m \e[34m{request>headers>Origin}\e[0m" {
+					time_format "02/Jan/2006:15:04:05"
 			}
 	}
 	log {
