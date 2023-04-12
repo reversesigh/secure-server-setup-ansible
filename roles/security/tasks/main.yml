@@ -33,6 +33,11 @@
     rule: allow
     from_ip: "{{ tenderduty_v2 }}"
 
+- name: Open tenderduty hetzner port
+  ufw:
+    rule: allow
+    from_ip: "{{ tenderduty_hetzner }}"
+
 - name: Open restake port
   ufw:
     rule: allow
