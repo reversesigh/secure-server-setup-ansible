@@ -16,24 +16,6 @@
 	}
 }
 
-(rpc-header) {
-	header {
-		Access-Control-Allow-Methods "POST, GET, OPTIONS"
-		Access-Control-Allow-Headers "*"
-		Access-Control-Allow-Origin "*"
-		Access-Control-Max-Age 86400
-		Cache-Control no-cache
-		Pragma no-cache
-		-Server
-	}
-}
-
-(api-header) {
-	header {
-		Access-Control-Allow-Origin "*"
-	}
-}
-
 (rate-limiter) {
 	# checks for list of allowed IPs
 	# documentation for rate_limit: https://caddyserver.com/docs/modules/http.handlers.rate_limit
@@ -73,13 +55,35 @@
 	}
 }
 
+(rpc-header) {
+	header {
+		Access-Control-Allow-Methods "POST, GET, OPTIONS"
+		Access-Control-Allow-Headers "*"
+		Access-Control-Allow-Origin "*"
+		Access-Control-Max-Age 86400
+		Cache-Control no-cache
+		Pragma no-cache
+		-Server
+	}
+}
+
+(api-header) {
+	header {
+		Access-Control-Allow-Origin "*"
+	}
+}
+
 (blocked) {
 # checks for blocked IPs and re-directs them to 403
-	@blocked {
+	@blocked_agents {
 		header User-Agent SubQuery-Node
+	}
+	respond @blocked_agents "<h1>Access Denied</h1>" 403
+	
+	@blocked_ips {
 		remote_ip forwarded {{ blocked_list }}
 	}
-	respond @blocked "<h1>Access Denied</h1>" 403
+	respond @blocked_ips "<h1>Access Denied</h1>" 403
 }
 
 handle_errors {

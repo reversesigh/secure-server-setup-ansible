@@ -49,10 +49,43 @@
     path: '/etc/caddy/'
     state: directory
 
+- name: Make rest dir
+  file:
+    path: '/etc/caddy/rest'
+    state: directory
+
+- name: Make rpc dir
+  file:
+    path: '/etc/caddy/rpc'
+    state: directory
+
+- name: Make grpc dir
+  file:
+    path: '/etc/caddy/grpc'
+    state: directory
+
 - name: Create Caddyfile
   template:
     src: Caddyfile
     dest: '/etc/caddy/Caddyfile'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0644'
+  tags: caddyfile
+
+- name: Create rest file
+  template:
+    src: rest.caddy
+    dest: '/etc/caddy/rest.caddy'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0644'
+  tags: caddyfile
+
+- name: Create rpc file
+  template:
+    src: rpc.caddy
+    dest: '/etc/caddy/rpc.caddy'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
     mode: '0644'
