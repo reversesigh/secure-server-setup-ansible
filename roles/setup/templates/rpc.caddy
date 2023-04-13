@@ -1,7 +1,6 @@
 rpc.lavenderfive.com {
     log
     import blocked
-    import rate-limiter
   
 	header {
 		Access-Control-Allow-Methods "POST, GET, OPTIONS"
@@ -12,6 +11,11 @@ rpc.lavenderfive.com {
 		Pragma no-cache
 		-Server
 	}
+
+    @websockets {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
 
     import /etc/caddy/rpc/*.caddy
 }

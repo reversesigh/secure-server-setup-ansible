@@ -1,5 +1,10 @@
 # xcaddy: https://github.com/caddyserver/xcaddy#install
 ---
+- name: change ansible_host to caddy server
+  set_fact:
+    host_ip: '{{ ansible_host }}'
+    ansible_host: '{{ caddy_server }}'
+
 - name: Add Caddy GPG
   apt_key:
    url: "{{ caddy_apt_gpg_key }}"
@@ -115,3 +120,6 @@
     enabled: yes
     daemon_reload: yes
 
+- name: switch back to original ip
+  set_fact:
+    ansible_host: '{{ host_ip }}'

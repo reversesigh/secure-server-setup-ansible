@@ -1,11 +1,10 @@
 rest.lavenderfive.com {
     log
     import blocked
-    import rate-limiter
 
     header {
 		Access-Control-Allow-Origin "*"
 	}
 
-    import /etc/caddy/api/*.caddy
+    import /etc/caddy/rest/*.caddy
 }

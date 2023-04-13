@@ -1,7 +1,6 @@
 grpc.lavenderfive.com {
     log
     import blocked
-    import rate-limiter
 
     import /etc/caddy/grpc/*.caddy
 }

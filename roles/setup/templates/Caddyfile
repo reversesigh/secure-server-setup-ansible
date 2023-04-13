@@ -21,9 +21,7 @@
 	# documentation for rate_limit: https://caddyserver.com/docs/modules/http.handlers.rate_limit
 	# documentation for xcaddy install: https://github.com/caddyserver/xcaddy#install
 	@ipfilter {
-		not header Origin [*yieldmos.com*]
-		not header Origin [*shadeprotocol.io*]
-		not header Origin [*kujira.app*]
+		expression !header({'Origin': '*kujira.app*'}) && !header({'Origin': '*yieldmos.com*'}) && !header({'Origin': '*shadeprotocol.io*'})
 
 {% for allowed in white_list %}
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
