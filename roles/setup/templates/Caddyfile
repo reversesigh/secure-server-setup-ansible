@@ -94,3 +94,4 @@ handle_errors {
 }
 
 import /etc/caddy/*.caddy
+import /etc/caddy/networks/*.caddy
