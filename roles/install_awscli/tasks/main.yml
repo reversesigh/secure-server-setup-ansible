@@ -1,0 +1,29 @@
+---
+- name: Download the awscli bundle
+  get_url: 
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /tmp/awscliv2.zip
+  register: aws_cli_download_bundle
+
+- name: Unarchive the installer
+  unarchive: 
+    src: /tmp/awscliv2.zip
+    dest: /tmp
+    copy: no
+    creates: /tmp/aws
+  when: aws_cli_download_bundle.changed
+  register: aws_cli_unarchive_installer
+
+- name: Install awscli package
+  shell: sudo /tmp/aws/install -i /usr/local/aws -b /usr/bin/aws
+  args:
+    creates: /usr/bin/aws
+  when: aws_cli_unarchive_installer.changed
+
+- name: Configure AWS
+  shell: aws configure set {{ item.key }} {{ item.value }} --profile {{ aws_profile }}
+  no_log: True
+  with_dict:
+    aws_access_key_id: "{{ aws_access_key }}"
+    aws_secret_access_key: "{{ aws_secret_key }}"
+  changed_when: false

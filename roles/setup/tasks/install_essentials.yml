@@ -30,6 +30,7 @@
       - chrony
       - html2text
       - aria2
+      - python3
     state: latest
     update_cache: true
 
