@@ -31,6 +31,8 @@
       - html2text
       - aria2
       - python3
+      - awscli
+      - snapd
     state: latest
     update_cache: true
 
@@ -45,8 +47,8 @@
     src: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
     remote_src: yes
     dest: '/usr/local/'
-    owner: root
-    group: root
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
     mode: '0755'
 
 - name: Go get cosmovisor
