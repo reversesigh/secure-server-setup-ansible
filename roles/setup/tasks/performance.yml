@@ -29,3 +29,22 @@
         daemon_reload: true
         enabled: true
       changed_when: false
+
+- name: Set journald to use RAM
+  become: true
+  shell:
+    cmd: |
+      cat > /etc/systemd/journald.conf << EOF
+      [Journal]
+      Storage=volatile
+      RuntimeMaxFileSize=256M
+      RuntimeMaxFiles=5
+      ForwardToSyslog=no
+      EOF
+
+- name: restart journald
+  systemd:
+    name: systemd-journald
+    state: restarted
+    daemon_reload: true
+    enabled: true
