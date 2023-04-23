@@ -1,0 +1,38 @@
+---
+- name: Add Caddy GPG
+  apt_key:
+  url: "{{ caddy_apt_gpg_key }}"
+  state: present
+  become: true
+
+- name: Add Caddy Repo
+  apt_repository:
+    repo: "{{ caddy_apt_repository }}"
+    state: present
+  become: true
+
+- name: Install Caddy
+  apt:
+    name: '{{ caddy_package }}'
+    state: present
+    update_cache: true
+  become: true
+
+- name: Install XCaddy
+  command: 'go install {{ xcaddy_repo }}'
+  environment:
+    PATH: '{{ path }}'
+    GOPATH: '{{ user_dir }}/go'
+
+- name: Use XCaddy to build Caddy with custom plugins
+  become: true
+  command: "xcaddy build --with github.com/caddyserver/transform-encoder --with github.com/RussellLuo/caddy-ext/ratelimit"
+  environment:
+    PATH: '{{ path }}'
+    GOPATH: '{{ user_dir }}/go'
+  
+- name: Move Xcaddy to /usr/bin/
+  copy:
+    src: "caddy"
+    dest: /usr/bin/caddy
+    remote_src: yes

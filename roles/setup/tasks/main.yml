@@ -30,10 +30,5 @@
   import_tasks: setup_swap.yml
   when: swap|default(false)|bool == true
 
-- name: Install Caddy
-  import_tasks: install_caddy.yml
-  tags: caddy
-  when: caddy|default(false)|bool == true
-
 - name: Install cosmprund
   import_tasks: install_cosmprund.yml

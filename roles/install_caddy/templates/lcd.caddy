@@ -1,4 +1,4 @@
-rest.lavenderfive.com {
+lcd.lavenderfive.com {
     log
     import blocked
 
@@ -6,5 +6,5 @@ rest.lavenderfive.com {
 		Access-Control-Allow-Origin "*"
 	}
 
-    import /etc/caddy/rest/*.caddy
+    import /etc/caddy/lcd/*.caddy
 }

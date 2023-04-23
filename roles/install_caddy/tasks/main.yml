@@ -1,0 +1,83 @@
+# xcaddy: https://github.com/caddyserver/xcaddy#install
+---
+- name: install caddy
+  when: caddy|default(false)|bool == true
+  tags: caddy
+  block:
+    - name: Change ansible_host to caddy server
+      set_fact:
+        host_ip: '{{ ansible_host }}'
+        ansible_host: '{{ caddy_server }}'
+
+    - name: Install xCaddy
+      import_tasks: install_xcaddy.yml
+
+    - name: Open Caddy port
+      ufw:
+        rule: allow
+        port: 80,443
+        proto: tcp
+
+    - name: Make Caddy dir
+      file:
+        path: '/etc/caddy/'
+        state: directory
+
+    - name: Make caddy subdirs
+      file:
+        path: '/etc/caddy/{{ item }}'
+        state: directory
+      loop: 
+        - 'grpc'
+        - 'rpc'
+        - 'api'
+
+    - name: Create Caddyfile
+      template:
+        src: Caddyfile
+        dest: '/etc/caddy/Caddyfile'
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+        mode: '0644'
+      tags: caddyfile
+
+    - name: Create endpoint files
+      template:
+        src: '{{ item }}.caddy'
+        dest: '/etc/caddy/{{ item }}.caddy'
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+        mode: '0644'
+      tags: caddyfile
+      loop:
+        - 'lcd'
+        - 'rpc'
+        - 'grpc'
+
+    - name: increase buffersize
+      command: 'sudo sysctl -w net.core.rmem_max=2500000'
+
+    - name: Make sure RuntimeMaxSec in 'caddy.service' exists
+      lineinfile:
+        path: '{{ service_path }}'
+        insertafter: '^TimeoutStopSec=5s'
+        line: 'RuntimeMaxSec=43200'
+        state: present
+
+    - name: Make sure Restart=always in 'caddy.service' exists
+      lineinfile:
+        path: '{{ service_path }}'
+        insertafter: '^TimeoutStopSec=5s'
+        line: 'Restart=always'
+        state: present
+
+    - name: Make sure caddy.service is started and enabled via systemd
+      systemd:
+        name: "caddy.service"
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+
+    - name: switch back to original ip
+      set_fact:
+        ansible_host: '{{ host_ip }}'
