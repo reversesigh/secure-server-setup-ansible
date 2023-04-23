@@ -3,16 +3,16 @@
 	# to see logs - 
 	# tail -100f /var/log/caddy/access.log | while read -r line; do echo -e "$line"; done
 	log http.log.access {
-			include http.log.access
-			output file /var/log/caddy/access.log
-			format formatted "\e[97m{status}\e[0m | \e[35m[{ts}]\e[0m \e[96m\e[1m{request>remote_ip}\e[0m \e[31m{request>headers>X-Forwarded-For}\e[0m \e[33m{request>method}\e[0m \e[92m{request>host}\e[32m{request>uri}\e[0m \e[34m{request>headers>Origin}\e[0m" {
-					time_format "02/Jan/2006:15:04:05"
-			}
+		include http.log.access
+		output file /var/log/caddy/access.log
+		format formatted "\e[97m{status}\e[0m | \e[35m[{ts}]\e[0m \e[96m\e[1m{request>remote_ip}\e[0m \e[31m{request>headers>X-Forwarded-For}\e[0m \e[33m{request>method}\e[0m \e[92m{request>host}\e[32m{request>uri}\e[0m \e[34m{request>headers>Origin}\e[0m" {
+				time_format "02/Jan/2006:15:04:05"
+		}
 	}
 	log {
-			exclude http.log.access
-			output file /var/log/caddy/caddy.log
-			format json
+		exclude http.log.access
+		output file /var/log/caddy/caddy.log
+		format json
 	}
 }
 
@@ -23,6 +23,21 @@
 	@ipfilter {
 		expression !header({'Origin': '*kujira.app*'}) && !header({'Origin': '*yieldmos.com*'}) && !header({'Origin': '*shadeprotocol.io*'})
 
+		###########################################
+		###########################################
+		##   Whitelist all of our own servers    ##
+		###########################################
+		###########################################
+{% for ip in groups['ip_list'] %}
+		not header X-FORWARDED-FOR {{ ip }}
+		not remote_ip {{ ip }}
+{% endfor %}
+
+		###########################################
+		###########################################
+		##     Whitelist for other servers       ##
+		###########################################
+		###########################################
 {% for allowed in white_list %}
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
 		{% for allowed_ip in allowed %}
@@ -47,8 +62,8 @@
 		rate_limit {header.X-FORWARDED-FOR} 100r/m
 		rate_limit {path.*} 150r/m
 
-		rate_limit {remote.ip} 2r/s
-		rate_limit {header.X-FORWARDED-FOR} 2r/s
+		rate_limit {remote.ip} 3r/s
+		rate_limit {header.X-FORWARDED-FOR} 3r/s
 		rate_limit {path.*} 10r/s
 	}
 }

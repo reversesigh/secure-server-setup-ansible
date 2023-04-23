@@ -1,0 +1,7 @@
+---
+- name: restart caddy
+  systemd:
+    name: caddy.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

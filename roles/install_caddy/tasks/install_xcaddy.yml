@@ -1,8 +1,8 @@
 ---
 - name: Add Caddy GPG
   apt_key:
-  url: "{{ caddy_apt_gpg_key }}"
-  state: present
+    url: "{{ caddy_apt_gpg_key }}"
+    state: present
   become: true
 
 - name: Add Caddy Repo

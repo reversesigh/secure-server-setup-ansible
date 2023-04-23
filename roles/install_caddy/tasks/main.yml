@@ -1,10 +1,12 @@
 # xcaddy: https://github.com/caddyserver/xcaddy#install
 ---
 - name: install caddy
+  run_once: true
   when: caddy|default(false)|bool == true
   tags: caddy
   block:
     - name: Change ansible_host to caddy server
+      tags: caddyfile
       set_fact:
         host_ip: '{{ ansible_host }}'
         ansible_host: '{{ caddy_server }}'
@@ -32,27 +34,40 @@
         - 'rpc'
         - 'api'
 
-    - name: Create Caddyfile
-      template:
-        src: Caddyfile
-        dest: '/etc/caddy/Caddyfile'
-        owner: '{{ ansible_user }}'
-        group: '{{ ansible_user }}'
-        mode: '0644'
+    - name: create Caddyfile
+      notify: restart caddy
       tags: caddyfile
+      block:
+        - name: Retrieve IP addresses for caddyfile whitelist
+          add_host:
+            name: "{{ hostvars[item].ansible_host }}"
+            groups: ip_list
+          loop: "{{ groups.all }}"
 
-    - name: Create endpoint files
-      template:
-        src: '{{ item }}.caddy'
-        dest: '/etc/caddy/{{ item }}.caddy'
-        owner: '{{ ansible_user }}'
-        group: '{{ ansible_user }}'
-        mode: '0644'
-      tags: caddyfile
-      loop:
-        - 'lcd'
-        - 'rpc'
-        - 'grpc'
+        - name: Create Caddyfile
+          template:
+            src: Caddyfile
+            dest: '/etc/caddy/Caddyfile'
+            owner: '{{ ansible_user }}'
+            group: '{{ ansible_user }}'
+            mode: '0644'
+
+        - name: Create endpoint files
+          template:
+            src: '{{ item }}.caddy'
+            dest: '/etc/caddy/{{ item }}.caddy'
+            owner: '{{ ansible_user }}'
+            group: '{{ ansible_user }}'
+            mode: '0644'
+          loop:
+            - 'lcd'
+            - 'rpc'
+            - 'grpc'
+
+        - name: format Caddyfile
+          command: 'caddy fmt --overwrite'
+          args:
+            chdir: /etc/caddy/
 
     - name: increase buffersize
       command: 'sudo sysctl -w net.core.rmem_max=2500000'
@@ -79,5 +94,6 @@
         daemon_reload: yes
 
     - name: switch back to original ip
+      tags: caddyfile
       set_fact:
         ansible_host: '{{ host_ip }}'
