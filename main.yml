@@ -5,7 +5,7 @@
   vars_files:
   - '{{ user_file }}'
   roles:
-    - setup
-    - install_caddy
-    - install_awscli
+    # - setup
+    # - install_caddy
+    # - install_awscli
     - security

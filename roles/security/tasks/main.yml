@@ -23,15 +23,15 @@
     port: "{{ ssh_port }}"
     proto: tcp
 
-- name: Open tenderduty port
-  ufw:
-    rule: allow
-    from_ip: "{{ tenderduty_v1 }}"
+# - name: Open tenderduty port
+#   ufw:
+#     rule: allow
+#     from_ip: "{{ tenderduty_v1 }}"
 
-- name: Open tenderduty v2 port
-  ufw:
-    rule: allow
-    from_ip: "{{ tenderduty_v2 }}"
+# - name: Open tenderduty v2 port
+#   ufw:
+#     rule: allow
+#     from_ip: "{{ tenderduty_v2 }}"
 
 - name: Open tenderduty hetzner port
   ufw:
