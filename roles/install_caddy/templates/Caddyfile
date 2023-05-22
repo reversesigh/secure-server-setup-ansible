@@ -21,7 +21,7 @@
 	# documentation for rate_limit: https://caddyserver.com/docs/modules/http.handlers.rate_limit
 	# documentation for xcaddy install: https://github.com/caddyserver/xcaddy#install
 	@ipfilter {
-		expression !header({'Origin': '*kujira.app*'}) && !header({'Origin': '*yieldmos.com*'}) && !header({'Origin': '*shadeprotocol.io*'})
+		expression {{ app_whitelist }}
 
 		###########################################
 		###########################################
