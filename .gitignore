@@ -2,3 +2,4 @@ inventory.ini
 users.yml
 .DS_Store
 roles/setup/files/pub_keys/*
+.vscode/*
