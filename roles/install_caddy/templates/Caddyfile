@@ -60,11 +60,11 @@
 #		}
 		rate_limit {remote.ip} 100r/m
 		rate_limit {header.X-FORWARDED-FOR} 100r/m
-		rate_limit {path.*} 150r/m
+		rate_limit {path*} 150r/m
 
-		rate_limit {remote.ip} 3r/s
-		rate_limit {header.X-FORWARDED-FOR} 3r/s
-		rate_limit {path.*} 10r/s
+		rate_limit {remote.ip} 5r/s
+		rate_limit {header.X-FORWARDED-FOR} 5r/s
+		rate_limit {path*} 7r/s
 	}
 }
 
