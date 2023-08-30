@@ -20,3 +20,9 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export GO111MODULE=on
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin:$HOME/.cargo/bin
+
+# history search
+bind -X '"\e0A": history-search-backward'
+bind -X '"\e[A": history-search-backward'
+bind -X '"\eOB": history-search-forward'
+bind -X '"\e[B": history-search-forward'
