@@ -6,6 +6,7 @@
   - '{{ user_file }}'
   roles:
     - setup
+    - install_zsh
     # - install_caddy
     # - install_awscli
     - security

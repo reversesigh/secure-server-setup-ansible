@@ -1,0 +1,44 @@
+---
+- name: Install zsh
+  become: true
+  apt:
+    name:
+      - zsh
+    state: latest
+
+- name: Remove old Oh My ZSH config
+  shell: 'rm -rf {{ user_dir }}/.oh-my-zsh/'
+
+- name: Download Oh My ZSH script
+  get_url:
+    url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    dest: '{{ user_dir }}/ozsh.sh'
+    mode: '0777'
+
+- name: Install Oh My ZSH
+  shell: 
+    cmd: 'sh {{ user_dir}}/ozsh.sh --unattended'
+  become_user: "{{ ansible_user }}"
+
+- name: Delete oh my zsh
+  file:
+    path: '{{ user_dir }}/ozsh.sh'
+    state: absent
+
+- name: Install Powerlevel 10k
+  git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: '{{ user_dir }}/.oh-my-zsh/custom/themes/powerlevel10k'
+    update: yes
+    force: yes
+    recursive: no
+
+- name: Copy config files
+  copy:
+    src: '{{ item }}'
+    dest: '{{ user_dir }}/{{ item }}'
+    owner: deploy
+    group: deploy
+  with_items:
+    - .zshrc
+    - .p10k.zsh
