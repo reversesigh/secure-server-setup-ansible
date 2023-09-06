@@ -33,6 +33,9 @@
       - python3
       - awscli
       - snapd
+      - clang
+      - pkg-config
+      - libssl-dev
     state: latest
     update_cache: true
 
