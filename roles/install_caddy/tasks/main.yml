@@ -33,6 +33,7 @@
         - 'grpc'
         - 'rpc'
         - 'api'
+        - 'jsonrpc'
 
     - name: create Caddyfile
       notify: restart caddy

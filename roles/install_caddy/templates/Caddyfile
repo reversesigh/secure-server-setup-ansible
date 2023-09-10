@@ -16,55 +16,89 @@
 	}
 }
 
-(rate-limiter) {
-	# checks for list of allowed IPs
-	# documentation for rate_limit: https://caddyserver.com/docs/modules/http.handlers.rate_limit
-	# documentation for xcaddy install: https://github.com/caddyserver/xcaddy#install
-	@ipfilter {
-		expression {{ app_whitelist }}
+(sla) {
+		expression \
+		{% for origin in sla_domains %}
+			{header.ORIGIN} == '{{ origin }}' || \
+		{% endfor %}
+		{% for key in sla_keys %}
+			{header.X-Api-Key} == '{{ key }}' || \
+		{% endfor %}
+		{% for allowed in sla %}
+			{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
+				{% for allowed_ip in allowed %}
+			{header.X-FORWARDED-FOR} == '{{ allowed_ip }}' || \
+				{% endfor %}
+			{% else  %}
+			{header.X-FORWARDED-FOR} == '{{ allowed_ip }}' || \
+			{% endif  %}
+		{% endfor %}
+	{% for ip in groups['ip_list'] %}
+		{header.X-FORWARDED-FOR} == '{{ ip }}' || \
+	{% endfor %}
+		{header.X-FORWARDED-FOR} == '50.53.247.222'
+}
 
-		###########################################
-		###########################################
-		##   Whitelist all of our own servers    ##
-		###########################################
-		###########################################
-{% for ip in groups['ip_list'] %}
-		not header X-FORWARDED-FOR {{ ip }}
-		not remote_ip {{ ip }}
-{% endfor %}
-
-		###########################################
-		###########################################
-		##     Whitelist for other servers       ##
-		###########################################
-		###########################################
-{% for allowed in white_list %}
+(whitelist) {
+	expression \
+	{% for origin in whitelist_domains %}
+		{header.ORIGIN} == '{{ origin }}' || \
+	{% endfor %}
+	{% for key in whitelist_keys %}
+		{header.X-Api-Key} == '{{ key }}' || \
+	{% endfor %}
+	{% for allowed in white_list %}
 	{% if allowed is iterable and (allowed is not string and allowed is not mapping) %}
 		{% for allowed_ip in allowed %}
-        not header X-FORWARDED-FOR {{ allowed_ip }}
-        not remote_ip {{ allowed_ip }}
+	{header.X-FORWARDED-FOR} == '{{ allowed_ip }}' || \
 		{% endfor %}
 	{% else  %}
-        not header X-FORWARDED-FOR {{ allowed }}
-        not remote_ip {{ allowed }}
+	{header.X-FORWARDED-FOR} == '{{ allowed_ip }}' || \
 	{% endif  %}
 {% endfor %}
+{header.X-FORWARDED-FOR} == '65.109.135.253'
+}
+
+(slas) {
+	@sla {
+		import sla
+	}
+}
+
+(whitelists) {
+	@whitelist {
+		import whitelist
+	}
+}
+
+(public-rate-limit) {
+	rate_limit {remote.ip} 60r/m
+	rate_limit {header.X-FORWARDED-FOR} 60r/m
+	rate_limit {path.*} 60r/m
+	rate_limit {path} 60r/m
+
+	rate_limit {remote.ip} 2r/s
+	rate_limit {header.X-FORWARDED-FOR} 2r/s
+	rate_limit {path.*} 2r/s
+	rate_limit {path} 2r/s
+}
+
+(rate-limiter) {
+	# documentation for rate_limit: https://caddyserver.com/docs/modules/http.handlers.rate_limit
+	# documentation for xcaddy install: https://github.com/caddyserver/xcaddy#install
+
+	@filter {
+		not {
+			import sla
+			import whitelist
+		}
 	}
 
-	handle @ipfilter {
+	handle @filter {
 		handle_path /cosmos/staking/v1beta1/validators/*/delegations* {
 			respond 404
 		}
-#		handle_path /status* {
-#			respond 404
-#		}
-		rate_limit {remote.ip} 100r/m
-		rate_limit {header.X-FORWARDED-FOR} 100r/m
-		rate_limit {path*} 150r/m
-
-		rate_limit {remote.ip} 5r/s
-		rate_limit {header.X-FORWARDED-FOR} 5r/s
-		rate_limit {path*} 7r/s
+		import public-rate-limit
 	}
 }
 
@@ -84,6 +118,54 @@
 	header {
 		Access-Control-Allow-Origin "*"
 	}
+}
+
+(grpc-body) {
+	transport http {
+		versions h2c 2
+		dial_timeout 3s
+	}
+}
+
+(lb-rpc) {
+  lb_policy round_robin
+    lb_retries 2
+  health_uri /status?
+    health_interval 5m
+    health_timeout 2s
+    health_status 2xx
+    health_body catching_up"\s*:\s*false
+  fail_duration 30s 
+    unhealthy_status 4xx
+    unhealthy_status 5xx
+    unhealthy_latency 30s
+}
+
+(lb-api) {
+  lb_policy round_robin
+    lb_retries 2
+  health_uri /cosmos/base/tendermint/v1beta1/syncing
+    health_interval 5m
+    health_timeout 5s
+    health_status 2xx
+    health_body syncing"\s*:\s*false
+  fail_duration 30s
+    unhealthy_status 4xx
+    unhealthy_latency 60s
+}
+
+(lb-grpc) {
+    lb_policy round_robin
+      lb_retries 2
+    fail_duration 30s 
+      unhealthy_status 4xx
+      unhealthy_status 5xx
+      unhealthy_latency 30s
+}
+
+(lb-json-rpc) {
+	lb_policy round_robin
+    	lb_retries 2
 }
 
 (blocked) {
