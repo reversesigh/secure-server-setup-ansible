@@ -114,12 +114,6 @@
 	}
 }
 
-(api-header) {
-	header {
-		Access-Control-Allow-Origin "*"
-	}
-}
-
 (grpc-body) {
 	transport http {
 		versions h2c 2
