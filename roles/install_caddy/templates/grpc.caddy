@@ -1,6 +1,0 @@
-grpc.lavenderfive.com {
-    log
-    import blocked
-
-    import /etc/caddy/grpc/*.caddy
-}

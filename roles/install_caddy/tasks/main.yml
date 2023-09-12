@@ -25,16 +25,6 @@
         path: '/etc/caddy/'
         state: directory
 
-    - name: Make caddy subdirs
-      file:
-        path: '/etc/caddy/{{ item }}'
-        state: directory
-      loop: 
-        - 'grpc'
-        - 'rpc'
-        - 'api'
-        - 'jsonrpc'
-
     - name: create Caddyfile
       notify: restart caddy
       tags: caddyfile
@@ -52,18 +42,6 @@
             owner: '{{ ansible_user }}'
             group: '{{ ansible_user }}'
             mode: '0644'
-
-        - name: Create endpoint files
-          template:
-            src: '{{ item }}.caddy'
-            dest: '/etc/caddy/{{ item }}.caddy'
-            owner: '{{ ansible_user }}'
-            group: '{{ ansible_user }}'
-            mode: '0644'
-          loop:
-            - 'lcd'
-            - 'rpc'
-            - 'grpc'
 
         - name: format Caddyfile
           command: 'caddy fmt --overwrite'

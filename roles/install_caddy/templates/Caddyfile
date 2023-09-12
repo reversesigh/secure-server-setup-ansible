@@ -184,5 +184,4 @@ handle_errors {
 	file_server
 }
 
-import /etc/caddy/*.caddy
 import /etc/caddy/networks/*.caddy
