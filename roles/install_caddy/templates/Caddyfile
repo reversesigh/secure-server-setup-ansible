@@ -1,7 +1,7 @@
 {
 	order rate_limit before basicauth
-	order replace after encode
-	
+	order replace after encode # https://github.com/caddyserver/replace-response
+
 	# to see logs - 
 	# tail -100f /var/log/caddy/access.log | while read -r line; do echo -e "$line"; done
 	log http.log.access {
