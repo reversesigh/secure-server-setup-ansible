@@ -175,6 +175,13 @@
 	respond @blocked_ips "<h1>Access Denied</h1>" 403
 }
 
+(regex) {
+	replace {
+		re ",\s*\"validator_info\"\s*:\s*{[^}]*},\s*\"[^}]*}" ""
+		re "\s*\"listen_addr\"\s*:\s*\"[^\"]*\"," ""
+	}
+}
+
 handle_errors {
 	respond "{err.status_code} {err.status_text}"
 }
