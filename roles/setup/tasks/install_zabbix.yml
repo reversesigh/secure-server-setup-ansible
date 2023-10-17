@@ -8,9 +8,15 @@
     path: "{{ zabbix_file }}"
   register: agent_file_check
 
-- name: Install and setup Zabbix
+- name: Download and Install Zabbix
+  when: agent_file_check.stat.islnk is not defined
   block:
-    - name: Download Zabbix Agent 5.4
+    - name: Check if Zabbix 6.x needs used
+      when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+      set_fact:
+        zabbix_url: https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu22.04_all.deb
+
+    - name: Download Zabbix
       get_url:
         url: "{{ zabbix_url }}"
         dest: '{{ zabbix_file }}'
@@ -29,7 +35,7 @@
     - name: Point to remote server
       command: sed -i 's/Server=127.0.0.1/Server='"{{ zabbix_server }}"'/g' /etc/zabbix/zabbix_agent2.conf  
 
-    - name: Download Zabbix Agent 5.4
+    - name: Download Zabbix Agent config
       get_url:
         url: "https://raw.githubusercontent.com/gh0stdotexe/cosmozab/main/zabbix_agent2.d/zab.userparameters.cosmos.conf"
         dest: '/etc/zabbix/zabbix_agent2.d/zab.userparameters.cosmos.conf '
@@ -48,4 +54,3 @@
         daemon_reload: yes
         enabled: yes
       changed_when: false
-  when: agent_file_check.stat.islnk is not defined
