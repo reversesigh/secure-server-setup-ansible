@@ -39,6 +39,10 @@
     state: latest
     update_cache: true
 
+- name: Uninstall go
+  become: true
+  shell: 'rm -rf /usr/local/go'
+
 - name: Download go
   get_url:
     url: 'https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz'
@@ -54,12 +58,6 @@
     group: '{{ ansible_user }}'
     mode: '0755'
 
-- name: Go get cosmovisor
-  command: 'go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@{{ cosmovisor_version }}'
-  environment:
-    PATH: '{{ path }}'
-    GOPATH: '{{ user_dir }}/go'
-
 - name: Change go folder permission
   become: true
   file:
@@ -68,6 +66,12 @@
     group: '{{ ansible_user }}'
     recurse: true
     mode: '0755'
+
+- name: Go get cosmovisor
+  command: 'go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest'
+  environment:
+    PATH: '{{ path }}'
+    GOPATH: '{{ user_dir }}/go'
 
 - name: Copy .profile
   template:
