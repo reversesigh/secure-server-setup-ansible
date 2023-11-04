@@ -58,15 +58,6 @@
     group: '{{ ansible_user }}'
     mode: '0755'
 
-- name: Change go folder permission
-  become: true
-  file:
-    path: '{{ user_dir }}/go'
-    owner: '{{ ansible_user }}'
-    group: '{{ ansible_user }}'
-    recurse: true
-    mode: '0755'
-
 - name: Go get cosmovisor
   command: 'go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest'
   environment:
@@ -80,3 +71,11 @@
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
     mode: '0600'
+
+- name: Change go folder permission
+  file:
+    path: '{{ user_dir }}/go'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    recurse: true
+    mode: '0755'
