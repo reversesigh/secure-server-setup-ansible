@@ -94,6 +94,13 @@
   with_items: 
     - "{{ horcrux_servers }}"
 
+- name: Allow Caddy server
+  ufw:
+    rule: allow
+    from_ip: "{{ item }}"
+  with_items: 
+    - "{{ caddy_server }}"
+
 - name: Disable password login
   lineinfile:
     dest: '/etc/ssh/sshd_config'
