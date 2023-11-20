@@ -131,10 +131,9 @@
     health_timeout 2s
     health_status 2xx
     health_body catching_up"\s*:\s*false
-  fail_duration 30s 
-    unhealthy_status 4xx
+  fail_duration 5s 
     unhealthy_status 5xx
-    unhealthy_latency 30s
+    unhealthy_latency 3s
 }
 
 (lb-api) {
@@ -145,18 +144,17 @@
     health_timeout 5s
     health_status 2xx
     health_body syncing"\s*:\s*false
-  fail_duration 30s
-    unhealthy_status 4xx
-    unhealthy_latency 60s
+  fail_duration 5s
+    unhealthy_status 5xx
+    unhealthy_latency 3s
 }
 
 (lb-grpc) {
     lb_policy round_robin
       lb_retries 2
-    fail_duration 30s 
-      unhealthy_status 4xx
+    fail_duration 5s 
       unhealthy_status 5xx
-      unhealthy_latency 30s
+      unhealthy_latency 3s
 }
 
 (lb-json-rpc) {
@@ -171,6 +169,13 @@
 	}
 	respond @blocked_agents "<h1>Access Denied</h1>" 403
 	
+	@blocked_other {
+		expression \
+		{header.X-FORWARDED-FOR}.contains('18.156.158.53') || \
+		{header.ORIGIN}.contains("autostake.com")
+	}
+	respond @blocked_other "<h1>Access Denied</h1>" 403
+
 	@blocked_ips {
 		remote_ip forwarded {{ blocked_list }}
 	}
