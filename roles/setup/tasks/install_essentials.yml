@@ -36,6 +36,8 @@
       - clang
       - pkg-config
       - libssl-dev
+      - fdisk
+      - vim
     state: latest
     update_cache: true
 
