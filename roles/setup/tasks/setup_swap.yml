@@ -5,6 +5,7 @@
   changed_when: false
   
 - name: Setup and enable swap
+  when: not swap_status_result.stdout is search("/swapfile")
   block: 
     - name: Create swap file
       command: fallocate -l {{ swap_space }} {{ swap_file }}
@@ -25,4 +26,3 @@
 
     - name: Turn on swap
       command: swapon -a
-  when: not swap_status_result.stdout is search("/swapfile")
