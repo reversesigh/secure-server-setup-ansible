@@ -12,14 +12,6 @@
 - name: Install docker
   import_tasks: install_docker.yml
 
-- name: Install node exporter
-  import_tasks: install_node_exporter.yml
-  when: node_exporter|default(false)|bool == true
-
-- name: Install promtail
-  import_tasks: install_promtail.yml
-  when: promtail|default(false)|bool == true
-
 - name: Set CPU governor
   import_tasks: performance.yml
 
