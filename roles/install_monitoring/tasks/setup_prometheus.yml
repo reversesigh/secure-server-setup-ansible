@@ -1,0 +1,39 @@
+---
+- name: setup vars
+  set_fact:
+    host_ip: "{{ ansible_host }}"
+    ansible_host: "{{ prometheus_host }}"
+    old_ssh_user: '{{ ansible_ssh_user }}'
+    old_port: '{{ ansible_port }}'
+    ansible_ssh_user: deploy
+    ansible_port: 1152
+
+- name: ensure the servers folder exists
+  run_once: true
+  file:
+    path: '{{ prometheus_dir }}/servers'
+    state: directory
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+
+- name: copy server config file
+  template:
+    src: 'server.yml.j2'
+    dest: '{{ prometheus_dir }}/servers/{{ ansible_hostname }}.yml'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0644'
+
+- name: restart prometheus
+  run_once: true
+  community.docker.docker_compose:
+    project_src: "{{ user_dir }}/node-monitoring"
+    services: prometheus
+    restarted: true
+    state: present
+
+- name: switch back to host_ip
+  set_fact:
+    ansible_host: "{{ host_ip }}"
+    ansible_ssh_user: '{{ old_ssh_user }}'
+    ansible_port: '{{ old_port }}'

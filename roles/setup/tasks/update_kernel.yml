@@ -1,0 +1,6 @@
+---
+- name: Update linux kernel to 6.5
+  ignore_errors: true
+  apt:
+    name:
+      - linux-oem-22.04d

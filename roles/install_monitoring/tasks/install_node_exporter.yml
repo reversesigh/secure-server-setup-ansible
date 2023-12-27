@@ -3,7 +3,8 @@
   ufw:
     rule: allow
     port: 9100
-    proto: tcp  
+    proto: tcp
+    from_ip: "{{ prometheus_host }}"
 
 - name: download node_exporter
   get_url:

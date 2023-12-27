@@ -9,3 +9,6 @@
 
 - name: Install Zabbix
   import_tasks: install_zabbix.yml
+
+- name: Setup Prometheus config
+  import_tasks: setup_prometheus.yml

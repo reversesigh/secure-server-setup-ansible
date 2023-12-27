@@ -87,19 +87,14 @@
     state: present
     create: true
 
-- name: Allow Horcrux server
+- name: Allow firewall access
   ufw:
     rule: allow
     from_ip: "{{ item }}"
   with_items: 
     - "{{ horcrux_servers }}"
-
-- name: Allow Caddy server
-  ufw:
-    rule: allow
-    from_ip: "{{ item }}"
-  with_items: 
     - "{{ caddy_server }}"
+    - "{{ prometheus_host }}"
 
 - name: Disable password login
   lineinfile:

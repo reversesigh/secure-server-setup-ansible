@@ -15,12 +15,13 @@
 - name: Set CPU governor
   import_tasks: performance.yml
 
-- name: Install Zabbix
-  import_tasks: install_zabbix.yml
-
 - name: Setup Swap
   import_tasks: setup_swap.yml
   when: swap|default(false)|bool == true
+
+- name: Update Kernel
+  import_tasks: update_kernel.yml
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
 
 - name: Install cosmprund
   import_tasks: install_cosmprund.yml
