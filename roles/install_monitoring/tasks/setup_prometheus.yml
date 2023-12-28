@@ -24,6 +24,12 @@
     group: '{{ ansible_user }}'
     mode: '0644'
 
+- name: Open loki port to server
+  ufw:
+    rule: allow
+    from_ip: "{{ host_ip }}"
+    port: 3100
+
 - name: restart prometheus
   run_once: true
   community.docker.docker_compose:
