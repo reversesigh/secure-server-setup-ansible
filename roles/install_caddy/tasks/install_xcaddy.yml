@@ -26,7 +26,7 @@
 
 - name: Use XCaddy to build Caddy with custom plugins
   become: true
-  command: "xcaddy build --with github.com/caddyserver/transform-encoder --with github.com/RussellLuo/caddy-ext/ratelimit --with github.com/caddyserver/replace-response"
+  command: "xcaddy build --with github.com/caddyserver/transform-encoder --with github.com/mholt/caddy-grpc-web --with github.com/RussellLuo/caddy-ext/ratelimit --with github.com/caddyserver/replace-response"
   environment:
     PATH: '{{ path }}'
     GOPATH: '{{ user_dir }}/go'
