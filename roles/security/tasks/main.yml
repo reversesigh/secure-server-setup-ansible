@@ -23,16 +23,6 @@
     port: "{{ ssh_port }}"
     proto: tcp
 
-# - name: Open tenderduty port
-#   ufw:
-#     rule: allow
-#     from_ip: "{{ tenderduty_v1 }}"
-
-# - name: Open tenderduty v2 port
-#   ufw:
-#     rule: allow
-#     from_ip: "{{ tenderduty_v2 }}"
-
 - name: Open tenderduty hetzner port
   ufw:
     rule: allow
@@ -42,6 +32,13 @@
   ufw:
     rule: allow
     from_ip: "{{ restake }}"
+
+- name: Allow firewall access for relayers
+  ufw:
+    rule: allow
+    from_ip: "{{ hostvars[item]['ansible_host'] }}"
+  loop: "{{ groups['relayers'] }}"
+  when: "'relayers' in group_names"
 
 - name: Deny port 22
   ufw:
