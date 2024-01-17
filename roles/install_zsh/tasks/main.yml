@@ -37,8 +37,8 @@
   copy:
     src: '{{ item }}'
     dest: '{{ user_dir }}/{{ item }}'
-    owner: deploy
-    group: deploy
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
   with_items:
     - .zshrc
     - .p10k.zsh

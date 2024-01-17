@@ -19,6 +19,10 @@
 	}
 }
 
+:16123 {
+	status 200 /
+}
+
 (sla) {
 		expression \
 		{% for origin in sla_domains %}
