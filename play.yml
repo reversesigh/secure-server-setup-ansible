@@ -1,9 +1,0 @@
----
-- hosts: '{{ target }}'
-  gather_facts: false
-  become: true
-  tasks:
-    - name: Open tenderduty hetzner port
-      ufw:
-        rule: allow
-        from_ip: 51.15.184.2

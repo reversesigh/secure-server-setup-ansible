@@ -1,0 +1,12 @@
+---
+- hosts: '{{ target }}'
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Delete ufw rule
+      ufw:
+        delete: true
+        rule: allow
+        port: 9100
+        from_ip: 65.108.227.217
+        proto: tcp
