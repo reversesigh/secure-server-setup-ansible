@@ -34,11 +34,17 @@
     from_ip: "{{ restake }}"
 
 - name: Allow firewall access for relayers
-  ufw:
-    rule: allow
-    from_ip: "{{ hostvars[item]['ansible_host'] }}"
-  loop: "{{ groups['relayers'] }}"
-  when: "'relayers' in group_names"
+  block:
+    - name: open port to central relayer
+      ufw:
+        rule: allow
+        from_ip: "{{ hostvars['ibc-relayer']['ansible_host'] }}"
+
+    - name: open port to fellow relayers
+      ufw:
+        rule: allow
+        from_ip: "{{ hostvars[item]['ansible_host'] }}"
+      loop: "{{ groups['relayers'] }}"
 
 - name: Deny port 22
   ufw:
