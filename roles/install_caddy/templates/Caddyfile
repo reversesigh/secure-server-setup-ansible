@@ -128,43 +128,15 @@
 	}
 }
 
-(lb-rpc) {
-  lb_policy round_robin
-    lb_retries 2
-  health_uri /status?
-    health_interval 5m
-    health_timeout 2s
-    health_status 2xx
-    health_body catching_up"\s*:\s*false
-  fail_duration 5s 
-    unhealthy_status 5xx
-    unhealthy_latency 3s
-}
-
-(lb-api) {
+(lb-config) {
   lb_policy round_robin
     lb_retries 2
   health_uri /cosmos/base/tendermint/v1beta1/syncing
+    health_port {args[0]}
     health_interval 5m
     health_timeout 5s
     health_status 2xx
     health_body syncing"\s*:\s*false
-  fail_duration 5s
-    unhealthy_status 5xx
-    unhealthy_latency 3s
-}
-
-(lb-grpc) {
-    lb_policy round_robin
-      lb_retries 2
-    fail_duration 5s 
-      unhealthy_status 5xx
-      unhealthy_latency 3s
-}
-
-(lb-json-rpc) {
-	lb_policy round_robin
-    	lb_retries 2
 }
 
 (blocked) {
