@@ -128,6 +128,12 @@
 	}
 }
 
+(lb-grpc) {
+	lb_policy round_robin
+	  lb_retries 2
+	  lb_try_duration 5s
+}
+
 (lb-config) {
   lb_policy round_robin
     lb_retries 2
