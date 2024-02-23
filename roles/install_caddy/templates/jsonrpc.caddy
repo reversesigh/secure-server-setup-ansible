@@ -1,0 +1,6 @@
+jsonrpc.lavenderfive.com {
+    log
+    import rpc-header
+    import blocked
+    import /etc/caddy/jsonrpc/*.caddy
+}

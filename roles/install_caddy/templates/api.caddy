@@ -1,0 +1,7 @@
+rest.lavenderfive.com {
+    log
+    import rpc-header
+    import blocked
+    import slas
+    import /etc/caddy/rest/*.caddy
+}

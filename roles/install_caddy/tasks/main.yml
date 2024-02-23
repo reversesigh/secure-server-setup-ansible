@@ -43,6 +43,19 @@
             group: '{{ ansible_user }}'
             mode: '0644'
 
+        - name: Create Caddyfiles
+          ignore_errors: true
+          template:
+            src: '{{ item }}'
+            dest: '/etc/caddy/{{ item }}'
+            owner: '{{ ansible_user }}'
+            group: '{{ ansible_user }}'
+            mode: '0644'
+          loop:
+            - api.caddy
+            - jsonrpc.caddy
+            - rpc.caddy
+
         - name: format Caddyfile
           command: 'caddy fmt --overwrite'
           args:

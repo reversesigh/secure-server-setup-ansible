@@ -1,0 +1,6 @@
+rpc.lavenderfive.com {
+    log
+    import blocked
+    import rpc-header
+    import /etc/caddy/rpc/*.caddy
+}
